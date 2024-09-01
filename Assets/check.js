@@ -81,23 +81,22 @@ $.onGetOwnProducts((ownProducts, json, errorReason) => {
 });
 
 $.onReceive((id, value, sender) => {
-  // アイテム実体確認のメッセージだったらメッセージを返す
-  if (id === SAMPLE_PING_MESSAGE_ID) {
-    sender.send(SAMPLE_PONG_MESSAGE_ID, "pong");
-    return;
+  switch (id) {
+    case SAMPLE_PING_MESSAGE_ID: {
+      sender.send(SAMPLE_PONG_MESSAGE_ID, "pong");
+      break;
+    }
+    case SAMPLE_CHECK_MESSAGE_ID: {
+      // 結果を返すための send 対象アイテムをキュー番号と紐つけておく
+      const queue = $.state.sendQueue;
+      queue[$.state.queueNumber] = sender;
+      $.state.sendQueue = queue;
+
+      $.getOwnProducts(SAMPLE_PRODUCT_ID, value, JSON.stringify({queueNumber: $.state.queueNumber, id: value.id}));
+
+      $.state.queueNumber = $.state.queueNumber + 1;
+      break;
+    }
+    default: break;
   }
-
-  // 関係のないメッセージだったら終了
-  if (id !== SAMPLE_CHECK_MESSAGE_ID) {
-    return;
-  }
-
-  // 結果を返すための send 対象アイテムをキュー番号と紐つけておく
-  const queue = $.state.sendQueue;
-  queue[$.state.queueNumber] = sender;
-  $.state.sendQueue = queue;
-  
-  $.getOwnProducts(SAMPLE_PRODUCT_ID, value, JSON.stringify({queueNumber: $.state.queueNumber, id: value.id}));
-
-  $.state.queueNumber = $.state.queueNumber + 1;
 });

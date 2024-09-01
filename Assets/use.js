@@ -50,34 +50,34 @@ $.onInteract((playerHandle) => {
 });
 
 $.onReceive((id, purchasedPlayerId, sender) => {
-  // アイテム実体確認のメッセージが返ってきたらキャッシュする
-  // worldItemReference ベータ抜けしてくれー！
-  if (id === SAMPLE_PONG_MESSAGE_ID) {
-    $.state.checkItemCache = sender;
-    return;
+  switch (id) {
+    // アイテム実体確認のメッセージ
+    case SAMPLE_PONG_MESSAGE_ID: {
+      $.state.checkItemCache = sender;
+      break;;
+    }
+    // 購入状況確認のメッセージ
+    case SAMPLE_RESULT_MESSAGE_ID: {
+      // 購入していなければログを出して終了
+      if (purchasedPlayerId === "") {
+        $.log("Use/onReceive: not purchased");
+        break;
+      }
+
+      // 購入済みであることをキャッシュする
+      // 今回のサンプルではワールドにいる最中に返金された場合を考慮しない
+      const cache = $.state.validateCache;
+      cache.push(purchasedPlayerId);
+      $.state.validateCache = cache;
+
+      if (!$.state.checkItemCache) {
+        $.state.checkItemCache = sender;
+      }
+
+      applyProductEffect();
+      break;
+    }
+    default: break;
   }
-
-  // 関係ないメッセージだったら捨てる
-  if (id !== SAMPLE_RESULT_MESSAGE_ID) {
-    return;
-  }
-
-  // 購入していなければログを出して終了
-  if (purchasedPlayerId === "") {
-    $.log("Use/onReceive: not purchased");
-    return;
-  }
-
-  // 購入済みであることをキャッシュする
-  // 今回のサンプルではワールドにいる最中に返金された場合を考慮しない
-  const cache = $.state.validateCache;
-  cache.push(purchasedPlayerId);
-  $.state.validateCache = cache;
-
-  if (!$.state.checkItemCache) {
-    $.state.checkItemCache = sender;
-  }
-
-  applyProductEffect();
 });
 
