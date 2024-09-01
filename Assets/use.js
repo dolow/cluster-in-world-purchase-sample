@@ -1,34 +1,35 @@
 const SAMPLE_PRODUCT_ID = "ここに商品 ID を入れてください";
-const SAMPLE_PING_MESSAGE_ID = "ping";
-const SAMPLE_PONG_MESSAGE_ID = "pong";
-const SAMPLE_CHECK_MESSAGE_ID = "check";
-const SAMPLE_RESULT_MESSAGE_ID = "check_result";
-
-/**
- * 近くのアイテムに投機的に send してメッセージを返してくれるアイテムを探す
- */
-function pingCheckItem() {
-  const items = $.getItemsNear($.getPosition(), 10);
-  for (let i = 0; i < items.length; i++) {
-    items[i].send(SAMPLE_PING_MESSAGE_ID, "ping");
-  }
-}
+const TEXT_SUBNODE_NAME = "Text";
 
 /**
  * 商品の効果を発動させる
  */
 function applyProductEffect() {
-  $.subNode("Text").setTextColor(Math.random(), Math.random(), Math.random(), 1);
+  $.subNode(TEXT_SUBNODE_NAME).setTextColor(Math.random(), Math.random(), Math.random(), 1);
+}
+
+/**
+ * 所有状況を確認する
+ * 購入したことがあっても返金済みであれば所有したことにはならない
+ */
+function isOwned(ownProducts, playerHandleId) {
+  for (let i = 0; i < ownProducts.length; i++) {
+    const product = ownProducts[i];
+    // インタラクトした playerHandle で購入情報がある場合
+    if (product.player?.id === playerHandleId) {
+      // 返金数よりも購入数が上回っている場合は購入済みとみなす
+      if (product.plusAmount - product.minusAmount > 0) {
+        return true;
+      }
+      break;
+    }
+  }
+  return false;
 }
 
 $.onStart(() => {
   // 毎回購入情報を確認する待ち時間を減らすためにキャッシュする
   $.state.validateCache = [];
-  $.state.checkItemCache = null;
-
-　// 購入情報確認用アイテムの存在を確認する
-  // worldItemReference ベータ抜けしてくれー！
-  pingCheckItem();
 });
 
 $.onInteract((playerHandle) => {
@@ -38,46 +39,31 @@ $.onInteract((playerHandle) => {
     return;
   }
 
-  // 購入情報確認用アイテムの存在が確認できていない場合はログを出して再確認して終了
-  if (!$.state.checkItemCache) {
-    $.log("Use/onInteract: not ready");
-    pingCheckItem();
+  $.getOwnProducts(SAMPLE_PRODUCT_ID, playerHandle, playerHandle.id);
+});
+
+$.onGetOwnProducts((ownProducts, playerHandleId, errorReason) => {
+  // 具体的なエラー理由が渡されている場合はログを出して終了
+  if (errorReason !== null) {
+    $.log(`Use/getOwnProducts: error ${errorReason}`);
     return;
   }
 
-  // 購入情報確認用アイテムに問い合わせる
-  $.state.checkItemCache.send(SAMPLE_CHECK_MESSAGE_ID, playerHandle);
-});
-
-$.onReceive((id, purchasedPlayerId, sender) => {
-  switch (id) {
-    // アイテム実体確認のメッセージ
-    case SAMPLE_PONG_MESSAGE_ID: {
-      $.state.checkItemCache = sender;
-      break;;
-    }
-    // 購入状況確認のメッセージ
-    case SAMPLE_RESULT_MESSAGE_ID: {
-      // 購入していなければログを出して終了
-      if (purchasedPlayerId === "") {
-        $.log("Use/onReceive: not purchased");
-        break;
-      }
-
-      // 購入済みであることをキャッシュする
-      // 今回のサンプルではワールドにいる最中に返金された場合を考慮しない
-      const cache = $.state.validateCache;
-      cache.push(purchasedPlayerId);
-      $.state.validateCache = cache;
-
-      if (!$.state.checkItemCache) {
-        $.state.checkItemCache = sender;
-      }
-
-      applyProductEffect();
-      break;
-    }
-    default: break;
+  // 購入情報がなければ終了
+  if (ownProducts.length === 0) {
+    return;
   }
-});
 
+  // 購入していなければ終了
+  if (!isOwned(ownProducts, playerHandleId)) {
+    return;
+  }
+
+  // 購入済みであることをキャッシュする
+  // 今回のサンプルではワールドにいる最中に返金された場合を考慮しない
+  const cache = $.state.validateCache;
+  cache.push(playerHandleId);
+  $.state.validateCache = cache;
+
+  applyProductEffect();
+});
