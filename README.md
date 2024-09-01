@@ -8,6 +8,17 @@
 - 課金商品の購入情報の取得
 
 
+# Settings
+
+実際に cluster にアップロードして課金の動作を確認する場合、商品 ID をご自身の ID に書き換えて利用してください。
+
+以下のファイルに `SAMPLE_PRODUCT_ID` として商品 ID が定義されているので、その値を書き換えます。
+
+- Assets/purchase.js
+- Assets/use.js
+- Assets/check.js
+
+
 # License
 
 このリポジトリは MIT ライセンスです。

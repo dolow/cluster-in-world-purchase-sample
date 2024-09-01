@@ -1,4 +1,4 @@
-const SAMPLE_PRODUCT_ID = "8eead611-f2a1-4922-bbb0-3e8ba867ee3c";
+const SAMPLE_PRODUCT_ID = "ここに商品 ID を入れてください";
 const SAMPLE_PURCHASE_META = "purchase_sample";
 
 $.onInteract((playerHandle) => {
