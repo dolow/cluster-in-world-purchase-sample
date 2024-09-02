@@ -45,7 +45,7 @@ $.onInteract((playerHandle) => {
 $.onGetOwnProducts((ownProducts, playerHandleId, errorReason) => {
   // 具体的なエラー理由が渡されている場合はログを出して終了
   if (errorReason !== null) {
-    $.log(`Use/getOwnProducts: error ${errorReason}`);
+    $.log(`Use/onGetOwnProducts: error ${errorReason}`);
     return;
   }
 
