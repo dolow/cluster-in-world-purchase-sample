@@ -16,7 +16,6 @@
 
 - Assets/purchase.js
 - Assets/use.js
-- Assets/check.js
 
 
 # License
