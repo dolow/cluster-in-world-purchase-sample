@@ -203,7 +203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMesh: {fileID: 0}
-  text: "\u305D\u308C\u305E\u308C\u30A4\u30F3\u30BF\u30E9\u30AF\u30C8\u3059\u308B\u3053\u3068\u3067\u52D5\u4F5C\u3057\u307E\u3059\n\nCheck\n\u30B3\u30F3\u30BD\u30FC\u30EB\u306B\u8CFC\u5165\u72B6\u6CC1\u304C\u30ED\u30B0\u51FA\u529B\u3055\u308C\u307E\u3059\n\nPurchase\n\u8AB2\u91D1\u5546\u54C1\u3092\u8CFC\u5165\u3067\u304D\u307E\u3059\n\nUse\n\u8AB2\u91D1\u5546\u54C1\u3092\u8CFC\u5165\u3057\u3066\u3044\u308B\u5834\u5408\n\u30C6\u30AD\u30B9\u30C8\u306E\u8272\u304C\u5909\u308F\u308A\u307E\u3059"
+  text: "\u305D\u308C\u305E\u308C\u30A4\u30F3\u30BF\u30E9\u30AF\u30C8\u3059\u308B\u3053\u3068\u3067\u52D5\u4F5C\u3057\u307E\u3059\n\nPurchase\n\u8AB2\u91D1\u5546\u54C1\u3092\u8CFC\u5165\u3067\u304D\u307E\u3059\n\nUse\n\u8AB2\u91D1\u5546\u54C1\u3092\u8CFC\u5165\u3057\u3066\u3044\u308B\u5834\u5408\n\u30C6\u30AD\u30B9\u30C8\u306E\u8272\u304C\u5909\u308F\u308A\u307E\u3059"
   size: 0.1
   textAnchor: 1
   textAlignment: 0
@@ -863,23 +863,18 @@ MonoBehaviour:
   text: 'Each item starts working on interact.
 
 
-    Check
-
-    Shows purchase log
-    in console.
-
-
     Purchase
 
-    Starts purchasing the product.
+    Starts purchasing
+    the product.
 
 
     Use
 
-    If
-    the user has purchased the product,
+    If the user has purchased the product,
 
-    it changes the color of the text.'
+    it changes
+    the color of the text.'
   size: 0.1
   textAnchor: 1
   textAlignment: 0
