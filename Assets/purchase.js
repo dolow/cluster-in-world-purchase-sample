@@ -7,25 +7,19 @@ $.onInteract((playerHandle) => {
 });
 
 $.onRequestPurchaseStatus((meta, status, errorReason, player) => {
-  // 購入成功
+  // 購入成功した時
   if (status === PurchaseRequestStatus.Purchased) {
     $.log("Purchase/requestPurchase: succeeded");
-
-    // 指定していないメタデータの場合、意図通りの購入処理ではないためログを出しておく
-    if (meta !== SAMPLE_PURCHASE_META) {
-      $.log(`Purchase/requestPurchase: unknwon meta "${meta}"`);
-    }
     return;
   }
 
-  // 具体的なエラー理由が渡されている場合はログを出して終了
+  // エラーが起こった時
   if (errorReason !== null) {
     $.log(`Purchase/requestPurchase: error ${errorReason}`);
     return;
   }
 
-  // それ以外の場合はステータスがわかるログを出して終了
-  // Busy や UserCanceled は復帰可能
+  // エラーじゃないけど何か問題がある時
   switch (status) {
     case PurchaseRequestStatus.Busy:         $.log("Purchase/requestPurchase: Busy");         break;
     case PurchaseRequestStatus.Failed:       $.log("Purchase/requestPurchase: Failed");       break;

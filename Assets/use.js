@@ -43,23 +43,24 @@ $.onInteract((playerHandle) => {
 });
 
 $.onGetOwnProducts((ownProducts, playerHandleId, errorReason) => {
-  // 具体的なエラー理由が渡されている場合はログを出して終了
+  // エラーが起こった時
   if (errorReason !== null) {
     $.log(`Use/onGetOwnProducts: error ${errorReason}`);
     return;
   }
 
-  // 購入情報がなければ終了
+  // 購入情報がない時
   if (ownProducts.length === 0) {
     return;
   }
 
-  // 購入していなければ終了
+  // 購入情報があるけど購入していない時
   if (!isOwned(ownProducts, playerHandleId)) {
     return;
   }
 
-  // 購入済みであることをキャッシュする
+  // 購入済みの時
+  // 購入済みユーザーをキャッシュする
   // 今回のサンプルではワールドにいる最中に返金された場合を考慮しない
   const cache = $.state.validateCache;
   cache.push(playerHandleId);
